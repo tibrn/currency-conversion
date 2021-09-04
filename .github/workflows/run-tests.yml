@@ -1,5 +1,4 @@
-name: 03 - Python Script Workflow
-
+name: Run tests
 on:
   push:
     branches: [ master ]
@@ -16,3 +15,6 @@ jobs:
 
       - name: Test
         run: make test
+
+      - name: Test cleanup
+        run: make test-cleanup || echo ''
