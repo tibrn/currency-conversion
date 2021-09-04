@@ -47,7 +47,7 @@ func TestRedis_Get_Set(t *testing.T) {
 	req.Equal("", val2)
 	req.Equal(false, isVal2)
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Millisecond * 150)
 
 	val2, isVal2 = redis.Get("test")
 	req.Equal("", val2)
