@@ -1,18 +1,39 @@
 package handlers
 
 import (
+	"currency-conversion/config"
 	"currency-conversion/helpers"
+	"currency-conversion/store"
 	"net/http"
+	"time"
 )
 
-func HandlerCreateProject(w http.ResponseWriter, r *http.Request) {
+var (
+	cfg = config.Get()
+)
 
-	authorization, err := helpers.GenerateRandomString(32)
+func HandlerCreateProject(store store.Store) func(w http.ResponseWriter, r *http.Request) {
 
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	return func(w http.ResponseWriter, r *http.Request) {
+		authorization, err := helpers.GenerateRandomString(32)
+
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		err = store.Set(
+			authorization,
+			time.Now().
+				Format(time.RFC3339Nano),
+			cfg.ExpirationProject,
+		)
+
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.Write([]byte(authorization))
 	}
-
-	w.Write([]byte(authorization))
 }

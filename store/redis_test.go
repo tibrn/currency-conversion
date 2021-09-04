@@ -29,7 +29,8 @@ func TestRedis_Get_Set(t *testing.T) {
 		DB:       cfg.RedisDB,
 	})
 
-	redis.Set("test", "test", time.Millisecond*100)
+	err := redis.Set("test", "test", time.Millisecond*100)
+	req.NoError(err)
 
 	val, isVal := redis.Get("test")
 

@@ -1,0 +1,26 @@
+version: "3.7"
+
+networks:
+  backend:
+    name: backend
+    driver: bridge
+
+services:
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - backend
+
+  currency_conversion_test:
+    build:
+      context: .
+      dockerfile: Dockerfile.Test
+    volumes:
+      - .:/test-dir
+    env_file: .env.test
+    depends_on:
+      - redis
+    networks:
+      - backend

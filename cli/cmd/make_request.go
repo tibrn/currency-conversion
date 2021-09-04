@@ -12,7 +12,7 @@ import (
 
 func makeRequest(method, path string, body interface{}, modifiers ...func(*http.Request)) (string, error) {
 	//Take host from viper or flag
-	apiHost := viper.Get(viperHost)
+	apiHost := viper.GetString(viperHost)
 	isHostFromFlag := false
 
 	if apiHost == "" {

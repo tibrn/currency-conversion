@@ -62,7 +62,17 @@ func updateCurrencies(store store.Store, converter converter.Converter) (err err
 		}
 
 		for symbol, value := range rates {
-			store.Set(fmt.Sprintf(formatExchange, base, symbol), fmt.Sprintf("%v", value), cfg.ExpirationProject)
+			errSet := store.Set(
+				fmt.Sprintf(formatExchange, base, symbol),
+				fmt.Sprintf("%v", value),
+				cfg.ExpirationProject,
+			)
+
+			if errSet != nil {
+				//Set return error
+				err = errSet
+				return
+			}
 		}
 	}
 

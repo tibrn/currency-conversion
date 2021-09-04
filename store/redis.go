@@ -52,14 +52,10 @@ func (red *Redis) Get(key string) (string, bool) {
 	return val, true
 }
 
-func (red *Redis) Set(key string, value string, ttl time.Duration) {
+func (red *Redis) Set(key string, value string, ttl time.Duration) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 
 	defer cancel()
 
-	err := red.client.Set(ctx, key, value, ttl).Err()
-
-	if err != nil {
-		log.Printf("Error set redis %v\n", err)
-	}
+	return red.client.Set(ctx, key, value, ttl).Err()
 }

@@ -7,7 +7,7 @@ import (
 
 type Store interface {
 	Get(string) (string, bool)
-	Set(string, string, time.Duration)
+	Set(string, string, time.Duration) error
 }
 
 var store Store

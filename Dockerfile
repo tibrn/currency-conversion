@@ -20,6 +20,6 @@ USER nobody
 
 COPY --from=builder /currency_convertor_web ./currency_convertor_web
 COPY --from=builder /currency_convertor_jobs ./currency_convertor_jobs
-COPY --from=builder /cli ./cli
+COPY --from=builder /cli ./build/cli
 
 CMD  ["/app/currency_convertor_web"]

@@ -11,7 +11,7 @@ import (
 
 func convert(cmd *cobra.Command, args []string) {
 
-	apiKey := viper.Get(viperApiKey)
+	apiKey := viper.GetString(viperApiKey)
 
 	if apiKey == "" {
 		fmt.Println("You need to input api-key flag or to create a new project!")

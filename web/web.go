@@ -2,6 +2,7 @@ package web
 
 import (
 	"currency-conversion/config"
+	"currency-conversion/store"
 	"currency-conversion/web/handlers"
 	"currency-conversion/web/middlewares"
 	"fmt"
@@ -14,8 +15,9 @@ import (
 
 func Start() {
 
-	http.Handle("/convert", http.HandlerFunc(handlers.HandlerConvert))
-	http.Handle("/create", http.HandlerFunc(middlewares.Authorize(handlers.HandlerCreateProject)))
+	store := store.Get()
+	http.Handle("/convert", http.HandlerFunc(handlers.HandlerConvert(store)))
+	http.Handle("/create", http.HandlerFunc(middlewares.Authorize(store, handlers.HandlerCreateProject(store))))
 
 	cfg := config.Get()
 

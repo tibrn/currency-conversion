@@ -18,6 +18,8 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file: .env
+    volumes:
+      - ./build:/app/build
     depends_on:
       - redis
       - currency_converter_jobs
