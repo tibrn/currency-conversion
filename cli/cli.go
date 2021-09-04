@@ -1,7 +1,10 @@
 package cli
 
-import "currency-conversion/cli/cmd"
+import (
+	"currency-conversion/cli/cmd"
+)
 
 func Start() {
 	cmd.Execute()
+
 }
