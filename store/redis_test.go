@@ -11,7 +11,13 @@ import (
 func Test_newRedis(t *testing.T) {
 	req := require.New(t)
 
-	redis := NewRedis(&ConfigRedis{})
+	cfg := config.Get()
+	redis := NewRedis(&ConfigRedis{
+		Host:     cfg.RedisHost,
+		Port:     cfg.RedisPort,
+		Password: cfg.RedisPassword,
+		DB:       cfg.RedisDB,
+	})
 
 	req.NotNil(redis)
 }

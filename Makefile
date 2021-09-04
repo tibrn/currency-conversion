@@ -3,6 +3,19 @@
 install:
 	go install github.com/golang/mock/mockgen@v1.6.0
 
+build:
+	cli
+	web
+	jobs
+cli:
+	go build -o /jobs ./cmd/cli
+
+web:
+	go build -o /web ./cmd/web
+
+jobs:
+	go build -o /jobs ./cmd/jobs
+
 test-build:
 	docker-compose -f docker-compose-test.yml build currency_conversion_test 
 

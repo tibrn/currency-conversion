@@ -25,7 +25,7 @@ func (f *Fixer) Rates(base string, symbols []string) (map[string]float64, error)
 	sort.Strings(symbols)
 
 	symbolsValue := url.Values{}
-	symbolsValue.Add("symbols", strings.Join(symbols, ""))
+	symbolsValue.Add("symbols", strings.Join(symbols, ","))
 
 	resp, err := f.client.Latest(context.Background(), fixer.Base(fixer.Currency(base)), symbolsValue)
 

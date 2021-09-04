@@ -34,7 +34,7 @@ func makeRequest(method, path string, body interface{}, modifiers ...func(*http.
 		buffBody.Write(bytsBody)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/", host, path), buffBody)
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/%s", host, path), buffBody)
 
 	if err != nil {
 		return "", err

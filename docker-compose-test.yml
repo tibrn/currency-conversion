@@ -7,7 +7,7 @@ networks:
 
 services:
 
-  redis:
+  currency_conversion_redis:
     image: redis:alpine
     restart: always
     networks:
@@ -21,6 +21,6 @@ services:
       - .:/test-dir
     env_file: .env.test
     depends_on:
-      - redis
+      - currency_conversion_redis
     networks:
       - backend

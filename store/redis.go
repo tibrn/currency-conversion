@@ -22,6 +22,7 @@ type ConfigRedis struct {
 
 func NewRedis(config *ConfigRedis) *Redis {
 
+	log.Println(fmt.Sprintf("%s:%d", config.Host, config.Port))
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.Host, config.Port),
 		Password: config.Password,

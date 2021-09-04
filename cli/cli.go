@@ -1,5 +1,7 @@
 package cli
 
-func Start() {
+import "currency-conversion/cli/cmd"
 
+func Start() {
+	cmd.Execute()
 }

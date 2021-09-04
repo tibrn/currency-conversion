@@ -15,6 +15,10 @@ type Conversion struct {
 	Symbol string  `json:"symbol"`
 }
 
+type ConvertedValue struct {
+	Conversion
+}
+
 func HandlerConvert(store store.Store) func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -54,8 +58,8 @@ func HandlerConvert(store store.Store) func(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		symbolConverted := fmt.Sprintf("%f", rate*conv.Value)
+		valueConverted := fmt.Sprintf("%f", rate*conv.Value)
 
-		w.Write([]byte(symbolConverted))
+		w.Write([]byte(valueConverted))
 	}
 }

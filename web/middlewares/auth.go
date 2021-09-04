@@ -15,9 +15,9 @@ var (
 	invalidAuthResponse = []byte("Not Authorized!")
 )
 
-func refreshAuthorization(createdAt, authorization string) {
+func refreshAuthorization(store store.Store, createdAt, authorization string) {
 
-	createdDate, err := time.Parse(time.RFC3339Nano, createdAt)
+	createdDate, err := time.Parse(time.RFC3339, createdAt)
 
 	if err != nil {
 		log.Printf("Error parsing createdAt:%v", err)
@@ -25,15 +25,15 @@ func refreshAuthorization(createdAt, authorization string) {
 	}
 
 	//If the request is before 24hours from last update/creation don't update
-	if time.Now().Before(createdDate.Add(time.Hour * 24)) {
+	if time.Now().UTC().Before(createdDate.Add(time.Hour * 24)) {
 		return
 	}
 
 	//Update authoriation createdAt and ttl
-	err = store.Get().Set(
+	err = store.Set(
 		authorization,
-		time.Now().
-			Format(time.RFC3339Nano),
+		time.Now().UTC().
+			Format(time.RFC3339),
 		cfg.ExpirationProject,
 	)
 
@@ -43,19 +43,27 @@ func refreshAuthorization(createdAt, authorization string) {
 
 }
 
+func unauthorized(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusUnauthorized)
+	w.Write(invalidAuthResponse)
+}
+
 //Authorize.. authorize request
 func Authorize(store store.Store, next http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		authorization := r.Header.Get(authHeader)
 
-		if createdAt, isAuth := store.Get(authorization); !isAuth {
+		if len(authorization) == 0 {
+			unauthorized(w)
+			return
+		}
 
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write(invalidAuthResponse)
+		if createdAt, isAuth := store.Get(authorization); !isAuth {
+			unauthorized(w)
 			return
 		} else {
-			go refreshAuthorization(createdAt, authorization)
+			go refreshAuthorization(store, createdAt, authorization)
 		}
 
 		// next

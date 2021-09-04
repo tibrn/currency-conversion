@@ -24,8 +24,8 @@ func HandlerCreateProject(store store.Store) func(w http.ResponseWriter, r *http
 
 		err = store.Set(
 			authorization,
-			time.Now().
-				Format(time.RFC3339Nano),
+			time.Now().UTC().
+				Format(time.RFC3339),
 			cfg.ExpirationProject,
 		)
 

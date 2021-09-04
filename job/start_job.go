@@ -61,17 +61,16 @@ func updateCurrencies(currencies Currencies, store store.Store, converter conver
 		}
 
 		for symbol, value := range rates {
-			errSet := store.Set(
+			err = store.Set(
 				fmt.Sprintf(formatExchange, base, symbol),
-				fmt.Sprintf("%v", value),
+				fmt.Sprintf("%f", value),
 				time.Hour*2,
 			)
 
-			if errSet != nil {
-				//Set return error
-				err = errSet
+			if err != nil {
 				return
 			}
+
 		}
 	}
 
@@ -86,15 +85,18 @@ func updateCurrencies(currencies Currencies, store store.Store, converter conver
 		//Wait to finish if we've reached the max limit of requests
 		if count == maxPending {
 			group.Wait()
+
+			if err != nil {
+				return
+			}
+
+			count = 0
 		}
 
-		if err != nil {
-			return
-		}
 	}
 
 	group.Wait()
 
-	return nil
+	return err
 
 }

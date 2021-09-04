@@ -20,7 +20,6 @@ type config struct {
 	RedisPort     int
 	RedisHost     string
 	RedisPassword string
-	RedisQueue    string
 
 	ExpirationProject time.Duration
 
@@ -61,7 +60,6 @@ func init() {
 		RedisHost:     mustGet("REDIS_HOST"),
 		RedisPort:     mustGetInt("REDIS_PORT"),
 		RedisPassword: mustGet("REDIS_PASSWORD"),
-		RedisQueue:    mustGet("REDIS_QUEUE"),
 		RedisDB:       mustGetInt("REDIS_DB"),
 
 		ExpirationProject: time.Hour * 24 * 7,
