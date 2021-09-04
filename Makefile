@@ -1,28 +1,12 @@
-version: "3.7"
+.PHONY: test, build, cli, jobs, web
 
-networks:
-  backend:
-    name: backend
-    driver: bridge
+build:
+  cli
+  jobs
+  web
 
-services:
-  currency_convertor_web:
-    build:
-      context: .
-      dockerfile: Dockerfile.Test
-    env_file: .env.test
-    networks:
-      - backend
+cli:
 
-  currency_convertor_jobs:
-    image: nats:alpine
-    restart: always
-    networks:
-      - backend
-
-  redis:
-    image: redis:alpine
-    restart: always
-    networks:
-      - backend
-
+jobs:
+  
+web: 

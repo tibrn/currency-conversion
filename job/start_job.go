@@ -68,7 +68,7 @@ func updateCurrencies(store store.Store, converter converter.Converter) (err err
 
 	for base, symbols := range currencies {
 
-		//Increaser
+		//Increase
 		group.Add(1)
 		count++
 

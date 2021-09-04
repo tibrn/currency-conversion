@@ -39,6 +39,8 @@ func HandlerConvert(w http.ResponseWriter, r *http.Request) {
 
 	if !isSymbol {
 		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(fmt.Sprintf("Symbol %s not found!", conv.Symbol)))
+
 		log.Printf("HandlerConvert, symbol not found: %s ", conv.Symbol)
 		return
 	}

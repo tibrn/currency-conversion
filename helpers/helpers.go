@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"io"
 	"math/big"
@@ -10,6 +11,10 @@ import (
 func init() {
 	assertAvailablePRNG()
 }
+
+var (
+	ErrNegativeLength = errors.New("String length must be positive")
+)
 
 func assertAvailablePRNG() {
 	// Assert that a cryptographically secure PRNG is available.
@@ -23,6 +28,11 @@ func assertAvailablePRNG() {
 }
 
 func GenerateRandomString(n int) (string, error) {
+
+	if n < 0 {
+		return "", ErrNegativeLength
+	}
+
 	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
 	ret := make([]byte, n)
 	for i := 0; i < n; i++ {
