@@ -12,9 +12,10 @@ jobs:
     steps:
       - name: Checkout repository content
         uses: actions/checkout@v2 
+      
+      - name: Test cleanup
+        run: make test-cleanup || echo ''
 
       - name: Test
         run: make test
 
-      - name: Test cleanup
-        run: make test-cleanup || echo ''
