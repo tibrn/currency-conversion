@@ -24,16 +24,16 @@ services:
       - ./build:/app/build
     depends_on:
       - redis
-      - currency_converter_jobs
+      - currency_converter_job
     networks:
       - backend
       
-  currency_converter_jobs:
+  currency_converter_job:
     build:
       context: .
       dockerfile: Dockerfile
     env_file: .env
-    command: ['/app/currency_converter_jobs']
+    command: ["./currency_converter_job"]
     depends_on:
       - redis
     networks:

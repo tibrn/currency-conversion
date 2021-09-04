@@ -11,9 +11,13 @@ import (
 
 func convert(cmd *cobra.Command, args []string) {
 
-	apiKey := viper.GetString(viperApiKey)
+	key := viper.GetString(viperApiKey)
 
-	if apiKey == "" {
+	if key == "" {
+
+		key = apiKey
+	}
+	if key == "" {
 		fmt.Println("You need to input api-key flag or to create a new project!")
 		return
 	}
@@ -31,7 +35,7 @@ func convert(cmd *cobra.Command, args []string) {
 	}
 
 	value, err := makeRequest(http.MethodGet, "convert", body, func(r *http.Request) {
-		r.Header.Add("Authorization", apiKey)
+		r.Header.Add("Authorization", key)
 	})
 
 	if err != nil {

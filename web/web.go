@@ -16,8 +16,8 @@ import (
 func Start() {
 
 	store := store.Get()
-	http.Handle("/convert", http.HandlerFunc(handlers.HandlerConvert(store)))
-	http.Handle("/create", http.HandlerFunc(middlewares.Authorize(store, handlers.HandlerCreateProject(store))))
+	http.Handle("/create", http.HandlerFunc(handlers.HandlerCreateProject(store)))
+	http.Handle("/convert", http.HandlerFunc(middlewares.Authorize(store, handlers.HandlerConvert(store))))
 
 	cfg := config.Get()
 

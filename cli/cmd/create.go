@@ -18,5 +18,6 @@ func create(cmd *cobra.Command, args []string) {
 	}
 
 	viper.Set(viperApiKey, string(apiKey))
+
 	fmt.Println(apiKey)
 }

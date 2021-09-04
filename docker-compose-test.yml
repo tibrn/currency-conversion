@@ -7,7 +7,7 @@ networks:
 
 services:
 
-  currency_conversion_redis:
+  redis:
     image: redis:alpine
     restart: always
     networks:
