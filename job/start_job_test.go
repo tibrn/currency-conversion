@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func expected(t *testing.T, isErr bool) (Currencies, store.Store, converter.Converter, func()) {
+func expected(t *testing.T) (Currencies, store.Store, converter.Converter, func()) {
 
 	ctrl := gomock.NewController(t)
 
@@ -22,12 +22,6 @@ func expected(t *testing.T, isErr bool) (Currencies, store.Store, converter.Conv
 	currencies := Currencies{
 		"EUR": []string{"USD", "RON"},
 		"USD": []string{"EUR"},
-	}
-
-	var err error
-
-	if isErr {
-		err = errors.New("fake")
 	}
 
 	converter.
@@ -48,14 +42,12 @@ func expected(t *testing.T, isErr bool) (Currencies, store.Store, converter.Conv
 	store.
 		EXPECT().
 		Set(fmt.Sprintf(formatExchange, "EUR", "USD"), fmt.Sprintf("%f", 1.2), time.Hour*2).
-		Return(err)
+		Return(nil)
 
-	if !isErr {
-		store.
-			EXPECT().
-			Set(fmt.Sprintf(formatExchange, "EUR", "RON"), fmt.Sprintf("%f", 5.0), time.Hour*2).
-			Return(err)
-	}
+	store.
+		EXPECT().
+		Set(fmt.Sprintf(formatExchange, "EUR", "RON"), fmt.Sprintf("%f", 5.0), time.Hour*2).
+		Return(nil)
 
 	store.
 		EXPECT().
@@ -71,7 +63,7 @@ func Test_updateCurrencies(t *testing.T) {
 
 	t.Run("Without error", func(t *testing.T) {
 		req := require.New(t)
-		currencies, store, converter, finish := expected(t, false)
+		currencies, store, converter, finish := expected(t)
 		defer finish()
 		err := updateCurrencies(currencies, store, converter)
 
@@ -80,8 +72,29 @@ func Test_updateCurrencies(t *testing.T) {
 
 	t.Run("With error", func(t *testing.T) {
 		req := require.New(t)
-		currencies, store, converter, finish := expected(t, true)
-		defer finish()
+		ctrl := gomock.NewController(t)
+
+		defer ctrl.Finish()
+
+		store := NewMockStore(ctrl)
+		converter := NewMockConverter(ctrl)
+
+		currencies := Currencies{
+			"EUR": []string{"USD"},
+		}
+
+		converter.
+			EXPECT().
+			Rates("EUR", []string{"USD"}).
+			Return(map[string]float64{
+				"USD": 1.2,
+			}, nil)
+
+		store.
+			EXPECT().
+			Set(fmt.Sprintf(formatExchange, "EUR", "USD"), fmt.Sprintf("%f", 1.2), time.Hour*2).
+			Return(errors.New("fake"))
+
 		err := updateCurrencies(currencies, store, converter)
 
 		req.Error(err)
@@ -90,7 +103,7 @@ func Test_updateCurrencies(t *testing.T) {
 
 func Test_startJob(t *testing.T) {
 
-	currencies, store, converter, finish := expected(t, false)
+	currencies, store, converter, finish := expected(t)
 	defer finish()
 
 	go startJob(currencies, store, converter)

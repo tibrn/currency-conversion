@@ -26,12 +26,12 @@ var (
 var cmdCreate = &cobra.Command{
 	Use:     "create",
 	Aliases: []string{"cr"},
-	Run:     create,
+	Run:     create(getHost),
 }
 var cmdConvert = &cobra.Command{
 	Use:     "convert",
 	Aliases: []string{"conv"},
-	Run:     convert,
+	Run:     convert(getHost),
 }
 
 var cmdRoot = &cobra.Command{

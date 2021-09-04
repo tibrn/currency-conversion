@@ -6,19 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/spf13/viper"
 )
 
-func makeRequest(method, path string, body interface{}, modifiers ...func(*http.Request)) (string, error) {
-	//Take host from viper or flag
-	apiHost := viper.GetString(viperHost)
-	isHostFromFlag := false
-
-	if apiHost == "" {
-		isHostFromFlag = true
-		apiHost = host
-	}
+func makeRequest(host, method, path string, body interface{}, modifiers ...func(*http.Request)) (string, error) {
 
 	buffBody := bytes.NewBuffer([]byte{})
 
@@ -49,11 +39,6 @@ func makeRequest(method, path string, body interface{}, modifiers ...func(*http.
 
 	if err != nil {
 		return "", err
-	}
-
-	if isHostFromFlag {
-		//Update persistent config from flags
-		viper.Set(viperHost, host)
 	}
 
 	defer resp.Body.Close()

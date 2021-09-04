@@ -21,6 +21,6 @@ services:
       - .:/test-dir
     env_file: .env.test
     depends_on:
-      - currency_conversion_redis
+      - redis
     networks:
       - backend

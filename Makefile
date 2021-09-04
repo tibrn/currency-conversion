@@ -1,4 +1,4 @@
-.PHONY: test, build, cli, job, web, test, generate, install
+.PHONY: test build cli job web test generate install
 
 install:
 	go install github.com/golang/mock/mockgen@v1.6.0
@@ -21,7 +21,7 @@ test-build:
 	docker-compose -f docker-compose-test.yml build currency_conversion_test 
 
 test:
-	docker-compose -f docker-compose-test.yml run  currency_conversion_test go test ./... -cover -timeout 400s 
+	docker-compose -f docker-compose-test.yml run  currency_conversion_test go test ./... -cover -timeout 10s 
 
 test-cleanup:
 	docker-compose -f docker-compose-test.yml  down

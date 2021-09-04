@@ -8,16 +8,24 @@ import (
 	"github.com/spf13/viper"
 )
 
-func create(cmd *cobra.Command, args []string) {
+func create(getHost func() (string, bool)) func(cmd *cobra.Command, args []string) {
 
-	apiKey, err := makeRequest(http.MethodPost, "create", nil)
+	return func(cmd *cobra.Command, args []string) {
+		host, isFromFlag := getHost()
 
-	if err != nil {
-		fmt.Println(err)
-		return
+		apiKey, err := makeRequest(host, http.MethodPost, "create", nil)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		if isFromFlag {
+			viper.Set(viperHost, host)
+		}
+
+		viper.Set(viperApiKey, string(apiKey))
+
+		fmt.Println(apiKey)
 	}
-
-	viper.Set(viperApiKey, string(apiKey))
-
-	fmt.Println(apiKey)
 }

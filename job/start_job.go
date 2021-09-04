@@ -43,36 +43,52 @@ func updateCurrencies(currencies Currencies, store store.Store, converter conver
 		}
 	}()
 
-	var (
-		group      = sync.WaitGroup{}
-		count      = 0
-		maxPending = 25
-	)
+	mtx := sync.Mutex{}
 
-	updateCurrency := func(base string, symbols []string) {
-		defer group.Done()
+	updateError := func(newErr error) {
+		mtx.Lock()
+		defer mtx.Unlock()
 
-		rates, errConv := converter.Rates(base, symbols)
-
-		if errConv != nil {
-			//Set return error
-			err = errConv
+		if newErr == nil {
 			return
 		}
 
+		if err == nil {
+			err = newErr
+		} else {
+			err = fmt.Errorf("%v&%v", err, newErr)
+		}
+	}
+
+	updateCurrency := func(base string, symbols []string) error {
+
+		rates, err := converter.Rates(base, symbols)
+
+		if err != nil {
+			return err
+		}
+
 		for symbol, value := range rates {
-			err = store.Set(
+			err := store.Set(
 				fmt.Sprintf(formatExchange, base, symbol),
 				fmt.Sprintf("%f", value),
 				time.Hour*2,
 			)
 
 			if err != nil {
-				return
+				return err
 			}
 
 		}
+
+		return nil
 	}
+
+	var (
+		group      = sync.WaitGroup{}
+		count      = 0
+		maxPending = 25
+	)
 
 	for base, symbols := range currencies {
 
@@ -80,7 +96,13 @@ func updateCurrencies(currencies Currencies, store store.Store, converter conver
 		group.Add(1)
 		count++
 
-		go updateCurrency(base, symbols)
+		go func(base string, symbols []string) {
+			defer group.Done()
+
+			err := updateCurrency(base, symbols)
+			updateError(err)
+
+		}(base, symbols)
 
 		//Wait to finish if we've reached the max limit of requests
 		if count == maxPending {
