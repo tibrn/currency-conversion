@@ -15,17 +15,16 @@ import (
 type Currencies map[string][]string
 
 var (
-	currencies = Currencies{}
-	cfg        = config.Get()
+	cfg = config.Get()
 )
 
 const formatExchange = "%s/%s"
 
-func startJob(store store.Store, converter converter.Converter) {
+func startJob(currencies Currencies, store store.Store, converter converter.Converter) {
 	for {
 
 		err := retry.Do(func() error {
-			return updateCurrencies(store, converter)
+			return updateCurrencies(currencies, store, converter)
 		})
 
 		if err != nil {
@@ -36,7 +35,7 @@ func startJob(store store.Store, converter converter.Converter) {
 	}
 }
 
-func updateCurrencies(store store.Store, converter converter.Converter) (err error) {
+func updateCurrencies(currencies Currencies, store store.Store, converter converter.Converter) (err error) {
 
 	defer func() {
 		if errRec := recover(); errRec != nil {
@@ -65,7 +64,7 @@ func updateCurrencies(store store.Store, converter converter.Converter) (err err
 			errSet := store.Set(
 				fmt.Sprintf(formatExchange, base, symbol),
 				fmt.Sprintf("%v", value),
-				cfg.ExpirationProject,
+				time.Hour*2,
 			)
 
 			if errSet != nil {

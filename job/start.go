@@ -6,5 +6,11 @@ import (
 )
 
 func Start() {
-	startJob(store.Get(), converter.Get())
+
+	currencies := Currencies{
+		"EUR": []string{"USD"},
+		"USD": []string{"EUR"},
+	}
+
+	startJob(currencies, store.Get(), converter.Get())
 }
