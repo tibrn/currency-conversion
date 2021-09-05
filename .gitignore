@@ -1,3 +1,6 @@
 .env
 vendor
 test
+cli-conv
+web
+job

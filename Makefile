@@ -9,7 +9,7 @@ build:
 	job
 
 cli:
-	go build -o ./cli ./cmd/cli
+	go build -o ./cli-conv ./cmd/cli
 
 web:
 	go build -o ./web ./cmd/web

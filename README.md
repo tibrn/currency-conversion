@@ -14,6 +14,8 @@ Simple application that takes currencies rates from external third-party API and
 
 # CLI
 
+## Build
+`make cli`
 ##  convert
 
 ```
