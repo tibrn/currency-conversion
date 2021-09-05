@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  title: Currency conversion API
+  description: Simple API and that converts rate.
+  version: 0.0.1
+servers:
+  - url: http://127.0.0.1:8081
+    description: Development url
+paths:
+  /create:
+    post:
+      summary: Returns api key for project.
+      responses:
+        '200':
+          description: API Key
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+  /convert:
+      get:
+        summary: Returns value converted.
+        parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+        requestBody:
+          description: Request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversion'
+              example:
+                symbol: EUR/USD
+                value: 5.2584
+        responses:
+          '200':
+            description: Value converted
+            content:
+              text/plain:
+                schema:
+                  type: string
+          '404': 
+            description: Symbol not found
+            content:
+              text/plain:
+                schema:
+                  type: string
+          '500':
+            description: Internal Server Error
+            content:
+              text/plain:
+                schema:
+                  type: string
+
+components:
+  schemas:
+    Conversion:
+      title: Conversion payload
+      type: object
+      properties:
+        symbol:          
+          type: string
+          description: "e.g. EUR/USD"
+        value:    
+          type: number
+          format: double
+          description: "e.g. 1.56789"
+      required:
+        - symbol
+        - value

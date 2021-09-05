@@ -1,0 +1,21 @@
+name: Run tests
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository content
+        uses: actions/checkout@v2 
+      
+      - name: Test cleanup
+        run: make test-cleanup || echo ''
+
+      - name: Test
+        run: make test
+

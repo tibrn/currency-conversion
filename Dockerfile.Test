@@ -1,0 +1,14 @@
+
+ARG GO_VERSION=1.16.1
+
+FROM golang:${GO_VERSION}-alpine AS tester
+
+WORKDIR /test-dir
+COPY go.mod go.mod
+COPY go.sum go.sum
+
+RUN go mod download
+
+COPY . .
+
+ENV CGO_ENABLED=0

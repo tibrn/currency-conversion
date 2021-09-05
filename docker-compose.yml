@@ -1,0 +1,40 @@
+version: "3.7"
+
+networks:
+  backend:
+    name: backend
+    driver: bridge
+
+services:
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - backend
+
+  currency_converter_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "127.0.0.1:8081:8081"
+    volumes:
+      - ./build:/app/build
+    depends_on:
+      - redis
+      - currency_converter_job
+    networks:
+      - backend
+      
+  currency_converter_job:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    command: ["./currency_converter_job"]
+    depends_on:
+      - redis
+    networks:
+      - backend
