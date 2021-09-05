@@ -75,6 +75,8 @@ func updateCurrencies(currencies Currencies, store store.Store, converter conver
 				time.Hour*2,
 			)
 
+			log.Printf("Symbol:%s rate:%f", fmt.Sprintf(formatExchange, base, symbol), value)
+
 			if err != nil {
 				return err
 			}
@@ -92,6 +94,7 @@ func updateCurrencies(currencies Currencies, store store.Store, converter conver
 
 	for base, symbols := range currencies {
 
+		log.Printf("%v , %v\n", base, symbols)
 		//Increase
 		group.Add(1)
 		count++
@@ -100,6 +103,9 @@ func updateCurrencies(currencies Currencies, store store.Store, converter conver
 			defer group.Done()
 
 			err := updateCurrency(base, symbols)
+
+			log.Printf("Error updateCurrency: %v\n", err)
+
 			updateError(err)
 
 		}(base, symbols)
@@ -118,6 +124,8 @@ func updateCurrencies(currencies Currencies, store store.Store, converter conver
 	}
 
 	group.Wait()
+
+	log.Printf("Job update done!\n")
 
 	return err
 
